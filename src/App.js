@@ -54,7 +54,7 @@ function App() {
       </AmplifyAuthenticator>
       {isUserLoggedIn && (
         <Fragment>
-          <div>Welcome to goa singham</div>
+          <div>Welcome to Halifax Foodie</div>
           <AmplifySignOut />
         </Fragment>
       )}
