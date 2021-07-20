@@ -1,0 +1,11 @@
+{
+  "auth": {
+    "halifaxfoodieuid41a94f6": {
+      "service": "Cognito",
+      "serviceType": "imported",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}

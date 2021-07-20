@@ -1,23 +1,63 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import {
+  withAuthenticator,
+  AmplifySignOut,
+  AmplifyAuthenticator,
+  AmplifySignUp,
+} from "@aws-amplify/ui-react";
+import { Auth } from "aws-amplify";
+import { Fragment, useEffect, useState } from "react";
 
 function App() {
+  const [userRole, setUserRole] = useState("U");
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  useEffect(() => {
+    // fetchUser();
+  });
+
+  const onAuthChange = async (state) => {
+    if (state === "signedin") {
+      setIsUserLoggedIn(true);
+      const user = await Auth.currentUserPoolUser();
+      console.log(user);
+    }
+  };
+
+  console.log(userRole);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <AmplifyAuthenticator handleAuthStateChange={onAuthChange}>
+        <AmplifySignUp
+          slot="sign-up"
+          formFields={[
+            { type: "username" },
+            { type: "password" },
+            { type: "email", required: true },
+            {
+              type: "custom:role",
+              required: true,
+              label:
+                "User Role (Enter 'U' for user and 'H' for restaurant employee)",
+              value: userRole,
+              handleInputChange: (e) =>
+                e.target.value.toLowerCase() !== "a"
+                  ? setUserRole("U")
+                  : setUserRole("H"),
+              inputProps: {
+                value: userRole,
+              },
+            },
+          ]}
+        />
+      </AmplifyAuthenticator>
+      {isUserLoggedIn && (
+        <Fragment>
+          <div>Welcome to goa singham</div>
+          <AmplifySignOut />
+        </Fragment>
+      )}
     </div>
   );
 }
