@@ -8,6 +8,7 @@ import {
 } from "@aws-amplify/ui-react";
 import { Auth } from "aws-amplify";
 import { Fragment, useEffect, useState } from "react";
+import Layout from "./Layout";
 
 function App() {
   const [userRole, setUserRole] = useState("U");
@@ -24,13 +25,24 @@ function App() {
     }
   };
 
-  console.log(userRole);
+  const handleSignUp = (data) => {
+    if (data.attributes["custom:role"] === "H") {
+      data.attributes["custom:role"] = "H";
+    } else {
+      data.attributes["custom:role"] = "U";
+    }
+    Auth.signUp(data);
+    Auth.signOut();
+  };
+
+  console.log("role", userRole);
 
   return (
     <div className="App">
       <AmplifyAuthenticator handleAuthStateChange={onAuthChange}>
         <AmplifySignUp
           slot="sign-up"
+          handleSignUp={handleSignUp}
           formFields={[
             { type: "username" },
             { type: "password" },
@@ -40,22 +52,13 @@ function App() {
               required: true,
               label:
                 "User Role (Enter 'U' for user and 'H' for restaurant employee)",
-              value: userRole,
-              handleInputChange: (e) =>
-                e.target.value.toLowerCase() !== "a"
-                  ? setUserRole("U")
-                  : setUserRole("H"),
-              inputProps: {
-                value: userRole,
-              },
             },
           ]}
         />
       </AmplifyAuthenticator>
       {isUserLoggedIn && (
         <Fragment>
-          <div>Welcome to Halifax Foodie</div>
-          <AmplifySignOut />
+          <Layout />
         </Fragment>
       )}
     </div>
