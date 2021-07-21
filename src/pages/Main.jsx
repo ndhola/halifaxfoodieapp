@@ -4,9 +4,10 @@ import Customer from "./customer/Customer";
 import Manager from "./manager/Manager";
 
 const Main = ({ user }) => {
+  console.log("user", user);
   return (
     <div>
-      {user.role === "U" ? (
+      {user.attributes["custom:role"] === "U" ? (
         <Fragment>
           <Route path="/" render={() => <Customer user={user} />} />
         </Fragment>
