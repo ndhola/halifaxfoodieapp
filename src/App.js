@@ -5,6 +5,8 @@ import {
   AmplifySignOut,
   AmplifyAuthenticator,
   AmplifySignUp,
+  AmplifyChatbot,
+  AmplifyConfirmSignUp,
 } from "@aws-amplify/ui-react";
 import { Auth } from "aws-amplify";
 import { Fragment, useEffect, useState } from "react";
@@ -13,15 +15,13 @@ import Layout from "./Layout";
 function App() {
   const [userRole, setUserRole] = useState("U");
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-  useEffect(() => {
-    // fetchUser();
-  });
+  const [user, setUser] = useState(null);
 
   const onAuthChange = async (state) => {
     if (state === "signedin") {
       setIsUserLoggedIn(true);
-      const user = await Auth.currentUserPoolUser();
-      console.log(user);
+      const userData = await Auth.currentUserPoolUser();
+      setUser(userData);
     }
   };
 
@@ -55,12 +55,9 @@ function App() {
             },
           ]}
         />
+        <AmplifyConfirmSignUp slot="confirm-sign-up" />
       </AmplifyAuthenticator>
-      {isUserLoggedIn && (
-        <Fragment>
-          <Layout />
-        </Fragment>
-      )}
+      {isUserLoggedIn && <Layout user={user} />}
     </div>
   );
 }
