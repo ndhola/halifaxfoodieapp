@@ -12,7 +12,7 @@ import Container from "@material-ui/core/Container";
 import { InfoRounded } from "@material-ui/icons";
 import { MenuItem, Select, InputLabel } from "@material-ui/core";
 import { securityQuestion } from "./securityQuestion";
-import { firestore } from "../../../services/firebase";
+import firebase, { firestore } from "../../../services/firebase";
 import { useHistory } from "react-router";
 
 function Copyright() {
@@ -76,6 +76,7 @@ const UserInfoPage = ({ user, setUserValidated }) => {
         email: user.attributes.email,
         role: user.attributes["custom:role"],
         securityAnswer,
+        created: firebase.database.ServerValue.TIMESTAMP,
       })
       .then(() => {
         alert("User data stored successfully");

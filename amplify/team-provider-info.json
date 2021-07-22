@@ -1,23 +1,28 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-halifaxfoodieui-dev-180456-authRole",
-      "UnauthRoleArn": "arn:aws:iam::593452339699:role/amplify-halifaxfoodieui-dev-180456-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::593452339699:role/amplify-halifaxfoodieui-dev-180456-authRole",
+      "AuthRoleName": "amplify-halifaxfoodieui-dev-110527-authRole",
+      "UnauthRoleArn": "arn:aws:iam::593452339699:role/amplify-halifaxfoodieui-dev-110527-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::593452339699:role/amplify-halifaxfoodieui-dev-110527-authRole",
       "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-halifaxfoodieui-dev-180456-deployment",
-      "UnauthRoleName": "amplify-halifaxfoodieui-dev-180456-unauthRole",
-      "StackName": "amplify-halifaxfoodieui-dev-180456",
-      "StackId": "arn:aws:cloudformation:us-east-1:593452339699:stack/amplify-halifaxfoodieui-dev-180456/25353280-e99e-11eb-9b18-12d101416601",
-      "AmplifyAppId": "d1rs3771pvpc9s"
+      "DeploymentBucketName": "amplify-halifaxfoodieui-dev-110527-deployment",
+      "UnauthRoleName": "amplify-halifaxfoodieui-dev-110527-unauthRole",
+      "StackName": "amplify-halifaxfoodieui-dev-110527",
+      "StackId": "arn:aws:cloudformation:us-east-1:593452339699:stack/amplify-halifaxfoodieui-dev-110527/e0b30d90-eaf5-11eb-b268-0eabd37574d3",
+      "AmplifyAppId": "d36qacuxlvob99"
     },
     "categories": {
       "auth": {
-        "halifaxfoodieuid41a94f6": {
-          "userPoolId": "us-east-1_vNOBsuVjw",
-          "userPoolName": "halifaxfoodieusers",
-          "webClientId": "4dir9117usut4gehtk5a7aff0f",
-          "nativeClientId": "4dir9117usut4gehtk5a7aff0f"
+        "halifaxfoodieuiff59a525": {}
+      },
+      "interactions": {
+        "lex3dacff75": {
+          "deploymentBucketName": "amplify-halifaxfoodieui-dev-110527-deployment",
+          "s3Key": "amplify-builds/lex3dacff75-66616e64777a485a4639-build.zip"
+        },
+        "lex8740272e": {
+          "deploymentBucketName": "amplify-halifaxfoodieui-dev-110527-deployment",
+          "s3Key": "amplify-builds/lex8740272e-4d6863526f4c726d4e55-build.zip"
         }
       }
     }

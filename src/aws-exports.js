@@ -3,12 +3,24 @@
 
 const awsmobile = {
     "aws_project_region": "us-east-1",
+    "aws_cognito_identity_pool_id": "us-east-1:597cf81d-1656-45a1-abb2-9d5ef61becae",
     "aws_cognito_region": "us-east-1",
-    "aws_user_pools_id": "us-east-1_vNOBsuVjw",
-    "aws_user_pools_web_client_id": "4dir9117usut4gehtk5a7aff0f",
-    "oauth": {
-        "domain": "halifaxfoodieusers.auth.us-east-1.amazoncognito.com"
-    }
+    "aws_user_pools_id": "us-east-1_mkcCT521l",
+    "aws_user_pools_web_client_id": "7olq1todbo6octg25mvbmpvi5r",
+    "oauth": {},
+    "aws_bots": "enable",
+    "aws_bots_config": [
+        {
+            "name": "BookTrip_dev",
+            "alias": "$LATEST",
+            "region": "us-east-1"
+        },
+        {
+            "name": "HalifaxFoodie_dev",
+            "alias": "$LATEST",
+            "region": "us-east-1"
+        }
+    ]
 };
 
 
