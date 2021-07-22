@@ -1,11 +1,22 @@
 {
   "auth": {
-    "halifaxfoodieuid41a94f6": {
+    "halifaxfoodieuiff59a525": {
       "service": "Cognito",
-      "serviceType": "imported",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
       "customAuth": false
+    }
+  },
+  "interactions": {
+    "lex3dacff75": {
+      "service": "Lex",
+      "providerPlugin": "awscloudformation",
+      "build": true
+    },
+    "lex8740272e": {
+      "service": "Lex",
+      "providerPlugin": "awscloudformation",
+      "build": true
     }
   }
 }
