@@ -1,15 +1,11 @@
-import logo from "./logo.svg";
 import "./App.css";
 import {
-  withAuthenticator,
-  AmplifySignOut,
   AmplifyAuthenticator,
   AmplifySignUp,
-  AmplifyChatbot,
   AmplifyConfirmSignUp,
 } from "@aws-amplify/ui-react";
 import { Auth } from "aws-amplify";
-import { Fragment, useEffect, useState } from "react";
+import { useState } from "react";
 import Layout from "./Layout";
 
 function App() {
@@ -18,11 +14,14 @@ function App() {
   const [user, setUser] = useState(null);
 
   const onAuthChange = async (state) => {
+    console.log(state);
     if (state === "signedin") {
       setIsUserLoggedIn(true);
       const userData = await Auth.currentUserPoolUser();
       setUser(userData);
+      return;
     }
+    setIsUserLoggedIn(false);
   };
 
   const handleSignUp = (data) => {
