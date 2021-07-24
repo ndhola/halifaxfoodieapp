@@ -36,6 +36,15 @@ const Layout = ({ user }) => {
       userInfo &&
       securityAnswer.toLowerCase() === userInfo.securityAnswer.toLowerCase()
     ) {
+      localStorage.setItem(
+        "userName",
+        userInfo.firstName + " " + userInfo.lastName
+      );
+      localStorage.setItem("userId", user.attributes.sub);
+      localStorage.setItem(
+        "token",
+        user.signInUserSession.accessToken.jwtToken
+      );
       setUserValidated(true);
       return;
     }
