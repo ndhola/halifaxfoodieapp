@@ -59,7 +59,7 @@ const UserChats = ({ user }) => {
   // };
 
   useEffect(() => {
-    const unsubscribe = observeUsers(user.userDataKey, {
+    const unsubscribe = observeUsers(user.attributes.sub, {
       next: (querySnapshot) => {
         loadUserList();
       },
@@ -72,7 +72,7 @@ const UserChats = ({ user }) => {
     const temp = [];
     const snapshots = await firestore
       .collection("chats")
-      .doc(user.userDataKey)
+      .doc(user.attributes.sub)
       .collection("users")
       .get();
     for (const doc of snapshots.docs) {
@@ -111,6 +111,7 @@ const UserChats = ({ user }) => {
       pathname: `/chats/${id}`,
       params: {
         user,
+        restaurantId: user.attributes.sub,
       },
     });
   };

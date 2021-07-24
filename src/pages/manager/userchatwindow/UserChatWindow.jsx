@@ -35,7 +35,6 @@ const useStyles = makeStyles({
 
 const UserChatWindow = ({ user }) => {
   const classes = useStyles();
-  const history = useHistory();
   const { id } = useParams();
   const lastMessageRef = useRef(null);
 
@@ -45,7 +44,7 @@ const UserChatWindow = ({ user }) => {
   useEffect(() => {
     const ref = firestore
       .collection("chats")
-      .doc(user.userDataKey)
+      .doc(user.attributes.sub)
       .collection("users")
       .doc(id);
     ref.get().then((doc) => {
@@ -59,7 +58,7 @@ const UserChatWindow = ({ user }) => {
   }, []);
 
   useEffect(() => {
-    const unsubscribe = observeChat(user.userDataKey, id, {
+    const unsubscribe = observeChat(user.attributes.sub, id, {
       next: (querySnapshot) => {
         if (querySnapshot.exists) {
           const updatedData = querySnapshot.data();
@@ -82,7 +81,7 @@ const UserChatWindow = ({ user }) => {
       alert("Invalid Message");
       return;
     }
-    pushMessage(message, user.userDataKey, id);
+    pushMessage(message, user.attributes.sub, id);
   };
 
   const pushMessage = (message, id, userId) => {
@@ -120,7 +119,7 @@ const UserChatWindow = ({ user }) => {
                     <Grid item xs={12}>
                       <ListItemText
                         align={
-                          message.id === user.userDataKey ? "right" : "left"
+                          message.id === user.attributes.sub ? "right" : "left"
                         }
                         primary={message.text}
                       ></ListItemText>
@@ -128,7 +127,7 @@ const UserChatWindow = ({ user }) => {
                     <Grid item xs={12}>
                       <ListItemText
                         align={
-                          message.id === user.userDataKey ? "right" : "left"
+                          message.id === user.attributes.sub ? "right" : "left"
                         }
                         secondary={moment(message.created).calendar()}
                       ></ListItemText>
@@ -146,6 +145,7 @@ const UserChatWindow = ({ user }) => {
               label="Type Something"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
+              onKeyPress={(e) => (e.code === "Enter" ? sendMessage() : null)}
               fullWidth
             />
           </Grid>

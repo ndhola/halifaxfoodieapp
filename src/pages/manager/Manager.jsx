@@ -1,7 +1,12 @@
 import React from "react";
+import FoodItems from "./foodItems/FoodItems";
 
-const Manager = () => {
-  return <div>Home Page Manager</div>;
+const Manager = ({ user }) => {
+  return (
+    <div>
+      <FoodItems user={user} />
+    </div>
+  );
 };
 
 export default Manager;

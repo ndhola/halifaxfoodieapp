@@ -20,7 +20,7 @@ function Copyright() {
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
       <Link color="inherit" href="https://material-ui.com/">
-        Your Website
+        Halifax Foodie
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -66,7 +66,7 @@ const UserInfoPage = ({ user, setUserValidated }) => {
   const addUser = () => {
     const ref = firestore
       .collection("user")
-      .doc(user.userDataKey)
+      .doc(user.attributes.sub)
       .set({
         firstName,
         lastName,

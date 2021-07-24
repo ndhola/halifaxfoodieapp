@@ -36,7 +36,6 @@ const useStyles = makeStyles({
 
 const ChatWindow = ({ user }) => {
   const classes = useStyles();
-  const history = useHistory();
   const { id } = useParams();
   const lastMessageRef = useRef(null);
 
@@ -48,19 +47,19 @@ const ChatWindow = ({ user }) => {
       .collection("chats")
       .doc(id)
       .collection("users")
-      .doc(user.userDataKey);
+      .doc(user.attributes.sub);
     ref.get().then((doc) => {
       if (doc.exists) {
         const { messages } = doc.data();
         setMessages(messages);
       } else {
-        createChat(id, user.userDataKey);
+        createChat(id, user.attributes.sub);
       }
     });
   }, []);
 
   useEffect(() => {
-    const unsubscribe = observeChat(id, user.userDataKey, {
+    const unsubscribe = observeChat(id, user.attributes.sub, {
       next: (querySnapshot) => {
         if (querySnapshot.exists) {
           const updatedData = querySnapshot.data();
@@ -79,12 +78,23 @@ const ChatWindow = ({ user }) => {
   }, [messages]);
 
   const createChat = (id, userId) => {
-    firestore.collection("chats").doc(id).collection("users").doc(userId).set({
-      id: id,
-      userId: userId,
-      messages: [],
-      created: firebase.firestore.FieldValue.serverTimestamp(),
-    });
+    console.log("create chat", userId);
+    firestore
+      .collection("chats")
+      .doc(id)
+      .collection("users")
+      .doc(userId)
+      .set(
+        Object.assign(
+          {},
+          {
+            id: id,
+            userId: userId,
+            messages: [],
+            created: firebase.firestore.FieldValue.serverTimestamp(),
+          }
+        )
+      );
   };
 
   const sendMessage = () => {
@@ -92,7 +102,7 @@ const ChatWindow = ({ user }) => {
       alert("Invalid Message");
       return;
     }
-    pushMessage(message, id, user.userDataKey);
+    pushMessage(message, id, user.attributes.sub);
   };
 
   const pushMessage = (message, id, userId) => {
@@ -116,8 +126,6 @@ const ChatWindow = ({ user }) => {
       .catch((error) => alert(error));
   };
 
-  console.log("messages", message);
-
   return (
     <div>
       <Grid item xs={9}>
@@ -133,7 +141,7 @@ const ChatWindow = ({ user }) => {
                     <Grid item xs={12}>
                       <ListItemText
                         align={
-                          message.id === user.userDataKey ? "right" : "left"
+                          message.id === user.attributes.sub ? "right" : "left"
                         }
                         primary={message.text}
                       ></ListItemText>
@@ -141,7 +149,7 @@ const ChatWindow = ({ user }) => {
                     <Grid item xs={12}>
                       <ListItemText
                         align={
-                          message.id === user.userDataKey ? "right" : "left"
+                          message.id === user.attributes.sub ? "right" : "left"
                         }
                         secondary={moment(message.created).calendar()}
                       ></ListItemText>
