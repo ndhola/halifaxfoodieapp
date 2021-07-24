@@ -2,10 +2,15 @@ import React from "react";
 import { AmplifyChatbot } from "@aws-amplify/ui-react";
 
 const Customer = () => {
+  const handleComplete = (data) => {
+    console.log(data);
+    return data;
+  };
   return (
     <div>
       <div>Customer Page</div>
       <AmplifyChatbot
+        onChatCompleted={handleComplete}
         botName="HalifaxFoodie_dev"
         botTitle="My ChatBot"
         welcomeMessage="Hello, how can I help you?"
