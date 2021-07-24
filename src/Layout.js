@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { AmplifySignOut } from "@aws-amplify/ui-react";
-import { useHistory } from "react-router-dom";
 import { Auth } from "aws-amplify";
 import { firestore } from "./services/firebase";
 import Main from "./pages/Main";
@@ -9,15 +8,14 @@ import SecurityCheck from "./pages/security-check/SecurityCheck";
 const Layout = ({ user }) => {
   const [userInfo, setUserInfo] = useState(null);
   const [userValidated, setUserValidated] = useState(false);
-  const history = useHistory();
 
   useEffect(() => {
     isUserExist();
   }, [user]);
 
   const isUserExist = () => {
-    if (user) {
-      const ref = firestore.collection("user").doc(user.userDataKey);
+    if (user && user.attributes) {
+      const ref = firestore.collection("user").doc(user.attributes.sub);
       ref
         .get()
         .then((doc) => {
