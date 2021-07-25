@@ -56,7 +56,7 @@ const Layout = ({ user }) => {
   return (
     <div>
       {userValidated ? (
-        <Main user={user} />
+        <Main setUserValidated={setUserValidated} user={user} />
       ) : (
         <SecurityCheck
           userInfo={userInfo}
@@ -65,14 +65,14 @@ const Layout = ({ user }) => {
           setUserValidated={setUserValidated}
         />
       )}
-      <AmplifySignOut
+      {/* <AmplifySignOut
         handleAuthStateChange={(state) => {
           if (state === "signedout") {
             setUserValidated(false);
             Auth.signOut();
           }
         }}
-      />
+      /> */}
     </div>
   );
 };
