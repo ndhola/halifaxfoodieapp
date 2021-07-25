@@ -9,7 +9,7 @@ export default {
   getOrders: () => {
     return {
       url: `${HALIFAXFOODIE_API_URL}/getOrders`,
-      method: "post",
+      method: "get",
     };
   },
   getAllFoodItems: () => {
@@ -28,18 +28,6 @@ export default {
     return {
       url: `${HALIFAXFOODIE_API_URL}/getFoodItemsByRestaurant`,
       method: "post",
-    };
-  },
-  getRestaurantOrders: () => {
-    return {
-      url: `${HALIFAXFOODIE_API_URL}/getRestaurantOrders`,
-      method: "post",
-    };
-  },
-  changeOrderStatus: () => {
-    return {
-      url: `${HALIFAXFOODIE_API_URL}/changeOrderStatus`,
-      method: "put",
     };
   },
 };
