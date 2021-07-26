@@ -8,6 +8,7 @@ import Orders from "./customer/orders/Orders";
 import Header from "./Header";
 import Manager from "./manager/Manager";
 import RestaurantOrders from "./manager/orders/Orders";
+import PubSub from "./manager/pubsub/PubSub";
 import UserChats from "./manager/userchats/UserChats";
 import UserChatWindow from "./manager/userchatwindow/UserChatWindow";
 
@@ -43,6 +44,7 @@ const Main = ({ user, setUserValidated }) => {
             path="/orders"
             render={() => <RestaurantOrders user={user} />}
           />
+          <Route path="/pubsub" render={() => <PubSub user={user} />} />
           <Route path="/chats" render={() => <UserChats user={user} />} />
           <Route path="/" render={() => <Manager user={user} />} />
         </Switch>
