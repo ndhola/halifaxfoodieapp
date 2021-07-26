@@ -12,6 +12,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import moment from "moment";
 import { RefreshRounded } from "@material-ui/icons";
+import { Button, TextField } from "@material-ui/core";
 
 const useStyles = makeStyles({
   table: {
@@ -22,6 +23,7 @@ const useStyles = makeStyles({
 const Orders = () => {
   const classes = useStyles();
   const [orderList, setOrderList] = useState(null);
+  const [review, setReview] = useState(null);
 
   useEffect(() => {
     fetchOrders();
@@ -46,6 +48,12 @@ const Orders = () => {
     }
   };
 
+  const submitReview = () => {
+    if (review === "") {
+      return;
+    }
+  };
+
   return (
     <TableContainer style={{ width: 800, margin: "auto" }} component={Paper}>
       <Table className={classes.table} aria-label="caption table">
@@ -58,6 +66,7 @@ const Orders = () => {
             <TableCell align="right">Restaurant Name</TableCell>
             <TableCell align="right">Order Date</TableCell>
             <TableCell align="right">Status</TableCell>
+            <TableCell align="right">Review</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -72,6 +81,19 @@ const Orders = () => {
                   {moment(row.orderDate).calendar()}
                 </TableCell>
                 <TableCell align="right">{row.orderStatus}</TableCell>
+                <TableCell align="right">
+                  <TextField
+                    type="text"
+                    value={review}
+                    onChange={(e) => setReview(e.target.value)}
+                  ></TextField>
+                  <Button
+                    onClick={submitReview}
+                    disabled={row.orderStatus !== "Delivered"}
+                  >
+                    Give Feedback
+                  </Button>
+                </TableCell>
               </TableRow>
             ))}
         </TableBody>

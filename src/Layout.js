@@ -65,14 +65,6 @@ const Layout = ({ user }) => {
           setUserValidated={setUserValidated}
         />
       )}
-      {/* <AmplifySignOut
-        handleAuthStateChange={(state) => {
-          if (state === "signedout") {
-            setUserValidated(false);
-            Auth.signOut();
-          }
-        }}
-      /> */}
     </div>
   );
 };

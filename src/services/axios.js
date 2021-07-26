@@ -1,5 +1,6 @@
 import axios from "axios";
 import halifaxfoodieAPI from "./halifaxFoodAPI/halifaxFoodAPI";
+import feedback from "./halifaxFoodAPI/feedback";
 
 // axios.defaults.baseURL =
 //   process.env.NODE_ENV === "development"
@@ -19,6 +20,6 @@ axios.interceptors.request.use(
   }
 );
 
-export const Routes = { halifaxfoodieAPI };
+export const Routes = { halifaxfoodieAPI, feedback };
 
 export default axios;

@@ -1,33 +1,9 @@
-const HALIFAXFOODIE_API_URL = "http://192.168.0.21:8080";
+const HALIFAXFOODIE_API_URL = "https://sentimentapi-5o6mak5rpa-ue.a.run.app";
 export default {
-  createOrder: () => {
+  fetchReviewsAnalysis: () => {
     return {
-      url: `${HALIFAXFOODIE_API_URL}/createOrder`,
-      method: "post",
-    };
-  },
-  getOrders: () => {
-    return {
-      url: `${HALIFAXFOODIE_API_URL}/getOrders`,
+      url: `${HALIFAXFOODIE_API_URL}/aws_fetch`,
       method: "get",
-    };
-  },
-  getAllFoodItems: () => {
-    return {
-      url: `${HALIFAXFOODIE_API_URL}/getAllFoodItems`,
-      method: "get",
-    };
-  },
-  createFoodItem: () => {
-    return {
-      url: `${HALIFAXFOODIE_API_URL}/createFoodItem`,
-      method: "post",
-    };
-  },
-  getFoodItemsByRestaurant: () => {
-    return {
-      url: `${HALIFAXFOODIE_API_URL}/getFoodItemsByRestaurant`,
-      method: "post",
     };
   },
 };
