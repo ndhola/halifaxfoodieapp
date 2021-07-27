@@ -1,4 +1,5 @@
-const HALIFAXFOODIE_API_URL = "https://pubsubapi-5o6mak5rpa-ue.a.run.app";
+const HALIFAXFOODIE_API_URL =
+  "https://halifaxfoodieapi-5o6mak5rpa-ue.a.run.app";
 export default {
   createOrder: () => {
     return {

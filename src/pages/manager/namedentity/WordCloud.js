@@ -12,10 +12,31 @@ function WordCloud() {
       let json = JSON.parse(
         JSON.stringify(response.data).split('"score":').join('"value":')
       );
+      // processData(json);
       setWords(json);
     }
     fetchUserData();
   }, []);
+
+  const processData = (json) => {
+    let mapData = {};
+    const newData = json.map((obj, index) => {
+      if (mapData[obj.text]) {
+        mapData[obj.text] += 1;
+      } else {
+        mapData[obj.text] = 1;
+      }
+    });
+    const data = Object.keys(newData).map((key) => {
+      return {
+        text: key,
+        value: newData[key],
+      };
+    });
+    setWords(data);
+  };
+
+  console.log(wordList);
 
   //   let json = JSON.parse(JSON.stringify(wordList).split('"score":').join('"value":'));
 

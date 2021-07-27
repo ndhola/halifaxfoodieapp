@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import axios, { Routes } from "../../../services/axios";
 import { TextField, Button } from "@material-ui/core";
 
-const PubSub = () => {
+const CustomerPubSub = () => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   useEffect(() => {
@@ -19,11 +19,11 @@ const PubSub = () => {
     try {
       const { url, method } = Routes.pubsubapi.receiveMessage();
       const { data } = await axios[method](url, {
-        subscriptionId: "supportsubscription",
+        subscriptionId: "supportsubscriptionforuser",
       });
       if (data.message) {
         const msg = JSON.parse(data.message);
-        console.log("hotel old messages", msg, userId);
+        console.log("customer old messages", msg.message.userId, userId);
         if (msg.userId !== userId) {
           setMessages((oldMessages) => [...oldMessages, msg]);
         }
@@ -51,8 +51,6 @@ const PubSub = () => {
     }
   };
 
-  console.log("messages", messages);
-
   return (
     <div>
       {messages &&
@@ -69,4 +67,4 @@ const PubSub = () => {
   );
 };
 
-export default PubSub;
+export default CustomerPubSub;

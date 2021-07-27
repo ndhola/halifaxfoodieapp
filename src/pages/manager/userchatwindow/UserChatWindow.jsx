@@ -9,8 +9,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Fab from "@material-ui/core/Fab";
 import SendIcon from "@material-ui/icons/Send";
-import firebase, { firestore } from "../../../services/firebase";
-import { observeChat } from "../../../services/users/functions";
+import axios, { Routes } from "../../../services/axios";
 import moment from "moment";
 
 const useStyles = makeStyles({
@@ -35,73 +34,120 @@ const useStyles = makeStyles({
 
 const UserChatWindow = ({ user }) => {
   const classes = useStyles();
-  const { id } = useParams();
+  // const { id } = useParams();
   const lastMessageRef = useRef(null);
 
-  const [message, setMessage] = useState(null);
-  const [messages, setMessages] = useState(null);
+  // const [message, setMessage] = useState(null);
+  // const [messages, setMessages] = useState(null);
 
+  // useEffect(() => {
+  //   const ref = firestore
+  //     .collection("chats")
+  //     .doc(user.attributes.sub)
+  //     .collection("users")
+  //     .doc(id);
+  //   ref.get().then((doc) => {
+  //     if (doc.exists) {
+  //       const { messages } = doc.data();
+  //       setMessages(messages);
+  //     } else {
+  //       alert("no chat available");
+  //     }
+  //   });
+  // }, []);
+
+  // useEffect(() => {
+  //   const unsubscribe = observeChat(user.attributes.sub, id, {
+  //     next: (querySnapshot) => {
+  //       if (querySnapshot.exists) {
+  //         const updatedData = querySnapshot.data();
+  //         setMessages(updatedData.messages);
+  //       }
+  //     },
+  //     error: (err) => alert(err),
+  //   });
+  //   return unsubscribe;
+  // }, [id]);
+
+  // useEffect(() => {
+  //   if (lastMessageRef && lastMessageRef.current) {
+  //     lastMessageRef.current.scrollIntoView();
+  //   }
+  // }, [messages]);
+
+  // const sendMessage = () => {
+  //   if (!message || message.replace(" ", "") === "") {
+  //     alert("Invalid Message");
+  //     return;
+  //   }
+  //   pushMessage(message, user.attributes.sub, id);
+  // };
+
+  // const pushMessage = (message, id, userId) => {
+  //   firestore
+  //     .collection("chats")
+  //     .doc(id)
+  //     .collection("users")
+  //     .doc(userId)
+  //     .update({
+  //       messages: firebase.firestore.FieldValue.arrayUnion({
+  //         text: message,
+  //         created: +new Date(),
+  //         id: id,
+  //       }),
+  //     })
+  //     .then(() => {
+  //       setMessage("");
+  //       console.log("message sent");
+  //     })
+  //     .catch((error) => alert(error));
+  // };
+
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
   useEffect(() => {
-    const ref = firestore
-      .collection("chats")
-      .doc(user.attributes.sub)
-      .collection("users")
-      .doc(id);
-    ref.get().then((doc) => {
-      if (doc.exists) {
-        const { messages } = doc.data();
-        setMessages(messages);
-      } else {
-        alert("no chat available");
-      }
-    });
+    const interval = setInterval(() => {
+      receiveMessage();
+    }, 5000);
+    return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const unsubscribe = observeChat(user.attributes.sub, id, {
-      next: (querySnapshot) => {
-        if (querySnapshot.exists) {
-          const updatedData = querySnapshot.data();
-          setMessages(updatedData.messages);
+  const receiveMessage = async () => {
+    const userId = localStorage.getItem("userName");
+    try {
+      const { url, method } = Routes.pubsubapi.receiveMessage();
+      const { data } = await axios[method](url, {
+        subscriptionId: "supportsubscription",
+      });
+      if (data.message) {
+        const msg = JSON.parse(data.message);
+        console.log("hotel old messages", msg, userId);
+        if (msg.userId !== userId) {
+          setMessages((oldMessages) => [...oldMessages, msg]);
         }
-      },
-      error: (err) => alert(err),
-    });
-    return unsubscribe;
-  }, [id]);
-
-  useEffect(() => {
-    if (lastMessageRef && lastMessageRef.current) {
-      lastMessageRef.current.scrollIntoView();
+      }
+    } catch (err) {
+      alert(err);
     }
-  }, [messages]);
-
-  const sendMessage = () => {
-    if (!message || message.replace(" ", "") === "") {
-      alert("Invalid Message");
-      return;
-    }
-    pushMessage(message, user.attributes.sub, id);
   };
 
-  const pushMessage = (message, id, userId) => {
-    firestore
-      .collection("chats")
-      .doc(id)
-      .collection("users")
-      .doc(userId)
-      .update({
-        messages: firebase.firestore.FieldValue.arrayUnion({
-          text: message,
-          created: +new Date(),
-          id: id,
-        }),
-      })
-      .then(() => {
-        setMessage("");
-        console.log("message sent");
-      })
-      .catch((error) => alert(error));
+  const sendMessage = async () => {
+    const userId = localStorage.getItem("userName");
+    if (message === "") {
+      return;
+    }
+    try {
+      const { url, method } = Routes.pubsubapi.sendMessage();
+      const { data } = await axios[method](url, {
+        message: { message, userId, created: +new Date() },
+        topic: "support",
+        id: userId,
+      });
+      setMessages((oldMessages) => [...oldMessages, { message, userId }]);
+      setMessage("");
+    } catch (err) {
+      alert(err);
+    }
   };
 
   return (
@@ -119,15 +165,19 @@ const UserChatWindow = ({ user }) => {
                     <Grid item xs={12}>
                       <ListItemText
                         align={
-                          message.id === user.attributes.sub ? "right" : "left"
+                          message.userId === localStorage.getItem("userName")
+                            ? "right"
+                            : "left"
                         }
-                        primary={message.text}
+                        primary={message.message}
                       ></ListItemText>
                     </Grid>
                     <Grid item xs={12}>
                       <ListItemText
                         align={
-                          message.id === user.attributes.sub ? "right" : "left"
+                          message.userId === localStorage.getItem("userName")
+                            ? "right"
+                            : "left"
                         }
                         secondary={moment(message.created).calendar()}
                       ></ListItemText>

@@ -3,6 +3,7 @@ import { Route, Switch } from "react-router";
 import Chats from "./customer/chats/Chats";
 import ChatWindow from "./customer/chatwindow/ChatWindow";
 import Customer from "./customer/Customer";
+import CustomerPubSub from "./customer/customerpubsub/CustomerPubSub";
 import FoodItems from "./customer/foodItems/FoodItems";
 import Orders from "./customer/orders/Orders";
 import Header from "./Header";
@@ -29,6 +30,7 @@ const Main = ({ user, setUserValidated }) => {
             path="/restaurant/:restaurantId"
             render={() => <FoodItems user={user} />}
           />
+          <Route path="/pubsub" render={() => <CustomerPubSub user={user} />} />
           <Route path="/orders" render={() => <Orders user={user} />} />
           <Route path="/chats" render={() => <Chats user={user} />} />
           <Route path="/" render={() => <Customer user={user} />} />
