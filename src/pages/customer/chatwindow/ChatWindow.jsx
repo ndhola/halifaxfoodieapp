@@ -13,6 +13,7 @@ import firebase, { firestore } from "../../../services/firebase";
 import { observeChat } from "../../../services/users/functions";
 import moment from "moment";
 import { useRef } from "react";
+import axios, { Routes } from "../../../services/axios";
 
 const useStyles = makeStyles({
   table: {
@@ -39,91 +40,138 @@ const ChatWindow = ({ user }) => {
   const { id } = useParams();
   const lastMessageRef = useRef(null);
 
-  const [message, setMessage] = useState(null);
-  const [messages, setMessages] = useState(null);
+  // const [message, setMessage] = useState(null);
+  // const [messages, setMessages] = useState(null);
 
+  // useEffect(() => {
+  //   const ref = firestore
+  //     .collection("chats")
+  //     .doc(id)
+  //     .collection("users")
+  //     .doc(user.attributes.sub);
+  //   ref.get().then((doc) => {
+  //     if (doc.exists) {
+  //       const { messages } = doc.data();
+  //       setMessages(messages);
+  //     } else {
+  //       createChat(id, user.attributes.sub);
+  //     }
+  //   });
+  // }, []);
+
+  // useEffect(() => {
+  //   const unsubscribe = observeChat(id, user.attributes.sub, {
+  //     next: (querySnapshot) => {
+  //       if (querySnapshot.exists) {
+  //         const updatedData = querySnapshot.data();
+  //         setMessages(updatedData.messages);
+  //       }
+  //     },
+  //     error: (err) => alert(err),
+  //   });
+  //   return unsubscribe;
+  // }, [id]);
+
+  // useEffect(() => {
+  //   if (lastMessageRef && lastMessageRef.current) {
+  //     lastMessageRef.current.scrollIntoView();
+  //   }
+  // }, [messages]);
+
+  // const createChat = (id, userId) => {
+  //   console.log("create chat", userId);
+  //   firestore
+  //     .collection("chats")
+  //     .doc(id)
+  //     .collection("users")
+  //     .doc(userId)
+  //     .set(
+  //       Object.assign(
+  //         {},
+  //         {
+  //           id: id,
+  //           userId: userId,
+  //           messages: [],
+  //           created: firebase.firestore.FieldValue.serverTimestamp(),
+  //         }
+  //       )
+  //     );
+  // };
+
+  // const sendMessage = () => {
+  //   if (!message || message.replace(" ", "") === "") {
+  //     alert("Invalid Message");
+  //     return;
+  //   }
+  //   pushMessage(message, id, user.attributes.sub);
+  // };
+
+  // const pushMessage = (message, id, userId) => {
+  //   firestore
+  //     .collection("chats")
+  //     .doc(id)
+  //     .collection("users")
+  //     .doc(userId)
+  //     .update({
+  //       messages: firebase.firestore.FieldValue.arrayUnion({
+  //         text: message,
+  //         created: +new Date(),
+  //         id: userId,
+  //         seen: false,
+  //       }),
+  //     })
+  //     .then(() => {
+  //       setMessage("");
+  //       console.log("message sent");
+  //     })
+  //     .catch((error) => alert(error));
+  // };
+
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
   useEffect(() => {
-    const ref = firestore
-      .collection("chats")
-      .doc(id)
-      .collection("users")
-      .doc(user.attributes.sub);
-    ref.get().then((doc) => {
-      if (doc.exists) {
-        const { messages } = doc.data();
-        setMessages(messages);
-      } else {
-        createChat(id, user.attributes.sub);
-      }
-    });
+    const interval = setInterval(() => {
+      receiveMessage();
+    }, 5000);
+    return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const unsubscribe = observeChat(id, user.attributes.sub, {
-      next: (querySnapshot) => {
-        if (querySnapshot.exists) {
-          const updatedData = querySnapshot.data();
-          setMessages(updatedData.messages);
+  const receiveMessage = async () => {
+    const userId = localStorage.getItem("userName");
+    try {
+      const { url, method } = Routes.pubsubapi.receiveMessage();
+      const { data } = await axios[method](url, {
+        subscriptionId: "supportsubscriptionforuser",
+      });
+      if (data.message) {
+        const msg = JSON.parse(data.message);
+        console.log("customer old messages", msg.message.userId, userId);
+        if (msg.userId !== userId) {
+          setMessages((oldMessages) => [...oldMessages, msg]);
         }
-      },
-      error: (err) => alert(err),
-    });
-    return unsubscribe;
-  }, [id]);
-
-  useEffect(() => {
-    if (lastMessageRef && lastMessageRef.current) {
-      lastMessageRef.current.scrollIntoView();
+      }
+    } catch (err) {
+      alert(err);
     }
-  }, [messages]);
-
-  const createChat = (id, userId) => {
-    console.log("create chat", userId);
-    firestore
-      .collection("chats")
-      .doc(id)
-      .collection("users")
-      .doc(userId)
-      .set(
-        Object.assign(
-          {},
-          {
-            id: id,
-            userId: userId,
-            messages: [],
-            created: firebase.firestore.FieldValue.serverTimestamp(),
-          }
-        )
-      );
   };
 
-  const sendMessage = () => {
-    if (!message || message.replace(" ", "") === "") {
-      alert("Invalid Message");
+  const sendMessage = async () => {
+    const userId = localStorage.getItem("userName");
+    if (message === "") {
       return;
     }
-    pushMessage(message, id, user.attributes.sub);
-  };
-
-  const pushMessage = (message, id, userId) => {
-    firestore
-      .collection("chats")
-      .doc(id)
-      .collection("users")
-      .doc(userId)
-      .update({
-        messages: firebase.firestore.FieldValue.arrayUnion({
-          text: message,
-          created: +new Date(),
-          id: userId,
-          seen: false,
-        }),
-      })
-      .then(() => {
-        setMessage("");
-        console.log("message sent");
-      })
-      .catch((error) => alert(error));
+    try {
+      const { url, method } = Routes.pubsubapi.sendMessage();
+      const { data } = await axios[method](url, {
+        message: { message, userId, created: +new Date() },
+        topic: "support",
+        id: userId,
+      });
+      setMessages((oldMessages) => [...oldMessages, { message, userId }]);
+      setMessage("");
+    } catch (err) {
+      alert(err);
+    }
   };
 
   return (
@@ -141,15 +189,19 @@ const ChatWindow = ({ user }) => {
                     <Grid item xs={12}>
                       <ListItemText
                         align={
-                          message.id === user.attributes.sub ? "right" : "left"
+                          message.userId === localStorage.getItem("userName")
+                            ? "right"
+                            : "left"
                         }
-                        primary={message.text}
+                        primary={message.message}
                       ></ListItemText>
                     </Grid>
                     <Grid item xs={12}>
                       <ListItemText
                         align={
-                          message.id === user.attributes.sub ? "right" : "left"
+                          message.userId === localStorage.getItem("userName")
+                            ? "right"
+                            : "left"
                         }
                         secondary={moment(message.created).calendar()}
                       ></ListItemText>
